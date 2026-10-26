@@ -21,32 +21,44 @@ function save() {
 }
 
 function updateCart() {
-  const items = [];
   let subtotal = 0;
   let totalUnits = 0;
+  let items = [];
 
-  cart = cart.filter(c => {
-    const p = prods.find(x => x.id === c.id);
-    if (!p || !p.active || p.stock <= 0) return false;
-    if (c.cantidad > p.stock) c.cantidad = p.stock;
-    subtotal += p.price * c.cantidad;
-    totalUnits += c.cantidad;
-    items.push({ ...p, cantidad: c.cantidad });
-    return true;
-  });
+  for (let c of cart) {
+    let p = prods.find(x => x.id === c.id);
+    if (p && p.active && p.stock > 0) {
+      if (c.cantidad > p.stock) c.cantidad = p.stock;
+      subtotal += p.price * c.cantidad;
+      totalUnits += c.cantidad;
+      items.push({ ...p, cantidad: c.cantidad });
+    }
+  }
 
   save();
-  const descuento = subtotal >= 300000 ? subtotal * 0.1 : 0;
+
+  let descuento = 0;
+  if (subtotal >= 300000) {
+    descuento = subtotal * 0.1;
+  }
+
   unitsEl.textContent = totalUnits;
   cartEl.info = { items, subtotal, descuento, total: subtotal - descuento };
 }
 
 function filter() {
-  let res = [...prods];
-  const q = search.value.toLowerCase().trim();
-  if (q) res = res.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
-  if (fCat.value && fCat.value !== "todas") res = res.filter(p => p.category === fCat.value);
-  if (fDisp.checked) res = res.filter(p => p.active && p.stock > 0);
+  let res = prods;
+  let txt = search.value.toLowerCase();
+
+  if (txt) {
+    res = res.filter(p => p.name.toLowerCase().includes(txt) || p.description.toLowerCase().includes(txt));
+  }
+  if (fCat.value !== "todas") {
+    res = res.filter(p => p.category === fCat.value);
+  }
+  if (fDisp.checked) {
+    res = res.filter(p => p.active && p.stock > 0);
+  }
 
   if (fOrd.value === "precio-menor") res.sort((a, b) => a.price - b.price);
   if (fOrd.value === "precio-mayor") res.sort((a, b) => b.price - a.price);
@@ -55,7 +67,10 @@ function filter() {
   list.productos = res;
 }
 
-[search, fCat, fOrd, fDisp].forEach(el => el.oninput = el.onchange = filter);
+search.oninput = filter;
+fCat.onchange = filter;
+fOrd.onchange = filter;
+fDisp.onchange = filter;
 
 bClear.onclick = () => {
   search.value = "";
@@ -66,11 +81,18 @@ bClear.onclick = () => {
 };
 
 document.addEventListener("agregar-carrito", e => {
-  const p = prods.find(x => x.id === e.detail.id);
-  if (!p || !p.active || p.stock <= 0) return alert("Producto no disponible");
-  const item = cart.find(x => x.id === p.id);
+  let p = prods.find(x => x.id === e.detail.id);
+  if (!p || !p.active || p.stock <= 0) {
+    alert("Producto no disponible");
+    return;
+  }
+
+  let item = cart.find(x => x.id === p.id);
   if (item) {
-    if (item.cantidad + 1 > p.stock) return alert("Supera el inventario");
+    if (item.cantidad >= p.stock) {
+      alert("No hay suficiente stock");
+      return;
+    }
     item.cantidad++;
   } else {
     cart.push({ id: p.id, cantidad: 1 });
@@ -79,13 +101,17 @@ document.addEventListener("agregar-carrito", e => {
 });
 
 document.addEventListener("cambiar-cantidad", e => {
-  const { id, delta } = e.detail;
-  const p = prods.find(x => x.id === id);
-  const item = cart.find(x => x.id === id);
-  if (!p || !item) return;
-  const nueva = item.cantidad + delta;
-  if (nueva < 1) return alert("Cantidad mínima: 1");
-  if (nueva > p.stock) return alert("Stock superado");
+  let p = prods.find(x => x.id === e.detail.id);
+  let item = cart.find(x => x.id === e.detail.id);
+  if (!item || !p) return;
+
+  let nueva = item.cantidad + e.detail.delta;
+  if (nueva < 1) return;
+  if (nueva > p.stock) {
+    alert("Supera el stock");
+    return;
+  }
+
   item.cantidad = nueva;
   updateCart();
 });
@@ -100,14 +126,25 @@ document.addEventListener("vaciar-carrito", () => {
   updateCart();
 });
 
+document.addEventListener("confirmar-pedido", () => {
+  if (cart.length === 0) {
+    alert("El carrito está vacío");
+    return;
+  }
+});
 
 async function init() {
   msgEl.textContent = "Cargando catálogo...";
   try {
     prods = await getProductos();
     msgEl.textContent = "";
-    const cats = [...new Set(prods.map(p => p.category))];
-    cats.forEach(c => fCat.innerHTML += `<option value="${c}">${c}</option>`);
+
+    prods.forEach(p => {
+      if (!fCat.innerHTML.includes(p.category)) {
+        fCat.innerHTML += `<option value="${p.category}">${p.category}</option>`;
+      }
+    });
+
     updateCart();
     filter();
   } catch (err) {
