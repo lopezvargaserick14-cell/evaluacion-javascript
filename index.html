@@ -7,41 +7,31 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <header class="barra-superior">
-        <h1>TecnoStock</h1>
-        <div class="indicador-carrito">
-            <span>🛒 Unidades en Carrito:</span>
-            <b id="totalUnidades">0</b>
-        </div>
+    <header>
+        <h2>TecnoStock</h2>
+        <div>Carrito: <b id="totalUnidades">0</b></div>
     </header>
 
-    <main class="contenedor-principal">
-        <section class="seccion-catalogo">
-            <div class="filtros">
-                <input type="text" id="buscador" placeholder="Buscar por nombre o descripción...">
-                <select id="filtroCategoria" class="filtro">
-                    <option value="todas">Todas las categorías</option>
-                </select>
-                <select id="filtroOrden" class="filtro">
-                    <option value="">Ordenar por precio</option>
-                    <option value="precio-menor">Precio: Menor a Mayor</option>
-                    <option value="precio-mayor">Precio: Mayor a Menor</option>
-                    <option value="nombre-az">Nombre: A - Z</option>
-                </select>
-                <label class="check-filtro">
-                    <input type="checkbox" id="checkDisponibles"> Solo disponibles
-                </label>
-                <button id="btnLimpiar" class="btn-limpiar">Limpiar filtros</button>
-            </div>
+    <div class="filtros">
+        <input type="text" id="buscador" placeholder="Buscar...">
+        <select id="filtroCategoria">
+            <option value="todas">Todas las categorías</option>
+        </select>
+        <select id="filtroOrden">
+            <option value="">Ordenar</option>
+            <option value="precio-menor">Menor precio</option>
+            <option value="precio-mayor">Mayor precio</option>
+            <option value="nombre-az">Nombre A-Z</option>
+        </select>
+        <label><input type="checkbox" id="checkDisponibles"> Solo disponibles</label>
+        <button id="btnLimpiar">Limpiar</button>
+    </div>
 
-            <div id="mensajeEstado" class="errormsg"></div>
+    <div id="mensajeEstado"></div>
 
-            <product-list id="lista-productos"></product-list>
-        </section>
-
-        <aside class="seccion-carrito">
-            <shopping-cart id="carrito-compras"></shopping-cart>
-        </aside>
+    <main class="contenedor">
+        <product-list id="lista-productos"></product-list>
+        <shopping-cart id="carrito-compras"></shopping-cart>
     </main>
 
     <script type="module" src="./js/app.js"></script>
