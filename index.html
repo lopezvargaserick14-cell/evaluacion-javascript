@@ -3,31 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tecnostokc</title>
+    <title>TecnoStock</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<header>
-    <h2>Tecnostokc</h2>
-    <div>Productos <b id="totalUnidades">0</b></div>
-</header>
-<div class="filtros">
-<input type="text" id="buscador" placeholder="buscar">
-<select id="filtroCategoria" class="filtro">
-<option value="todas">Todas las categorias</option>
-<option value="Tecnologia">Tecnologia</option>
-<option value="Ropa">Ropa</option>
-<option value="Alimentos">Alimentos</option>
-<option value="Higiene">Higiene</option>
-
-</select>
-<select id="filtroOrden" class="filtro">
-    <option value="">Precio</option>
-    <option value="precio-menor">Menor</option>
-    <option value="precio-mayor">Mayor</option>
-    <option value="nombre-az">Alfabético (A-Z)</option>
-</select>
-</div>
 <body>
-    
+    <header class="barra-superior">
+        <h1>TecnoStock</h1>
+        <div class="indicador-carrito">
+            <span>🛒 Unidades en Carrito:</span>
+            <b id="totalUnidades">0</b>
+        </div>
+    </header>
+
+    <main class="contenedor-principal">
+        <section class="seccion-catalogo">
+            <div class="filtros">
+                <input type="text" id="buscador" placeholder="Buscar por nombre o descripción...">
+                <select id="filtroCategoria" class="filtro">
+                    <option value="todas">Todas las categorías</option>
+                </select>
+                <select id="filtroOrden" class="filtro">
+                    <option value="">Ordenar por precio</option>
+                    <option value="precio-menor">Precio: Menor a Mayor</option>
+                    <option value="precio-mayor">Precio: Mayor a Menor</option>
+                    <option value="nombre-az">Nombre: A - Z</option>
+                </select>
+                <label class="check-filtro">
+                    <input type="checkbox" id="checkDisponibles"> Solo disponibles
+                </label>
+                <button id="btnLimpiar" class="btn-limpiar">Limpiar filtros</button>
+            </div>
+
+            <div id="mensajeEstado" class="errormsg"></div>
+
+            <product-list id="lista-productos"></product-list>
+        </section>
+
+        <aside class="seccion-carrito">
+            <shopping-cart id="carrito-compras"></shopping-cart>
+        </aside>
+    </main>
+
+    <script type="module" src="./js/app.js"></script>
 </body>
 </html>
