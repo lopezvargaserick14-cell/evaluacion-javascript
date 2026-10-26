@@ -9,6 +9,15 @@
     "active": true
     },
     {
+    "id": 102,
+    "name": "Pantalla",
+    "category": "Tecnologia",
+    "price": 1444444,
+    "stock": 2,
+    "description": "Pantalla uso",
+    "active": true
+    },
+    {
     "id": 103,
     "name": " mouse",
     "category": "Tecnologia",
