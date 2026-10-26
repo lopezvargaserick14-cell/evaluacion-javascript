@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+    <h1>FAKESTORE</h1>
+    <input type="text" id="input-busqueda" placeholder="Buscar productos...">
+    <button id="boton-abrir-carrito">
+    🛒 Carrito (<span id="contador-carrito">0</span>)
+    </button>
+</header>
+<section>
+    <select name="" id="filtro-categoria">
+    <option value="todas">Todas las categorias</option>  
+    </select>
+
+    <select id="filtro-orden">
+    <option value="defecto">Relevancia</option>
+    <option value="precio-menor">Precio: Menor a Mayor</option>
+    <option value="precio-mayor">Precio: Mayor a Menor</option>
+    <option value="nombre-az">Nombre:A-Z</option>
+    </select>
+</section>
+<template id="plantilla-producto">
+    <article class="tarjeta-producto">
+    <h3 class="titulo-producto"></h3>
+    <h4 class="producto-descripcion"></h4>
+    <span class="producto-categoria"></span>
+    <p class="producto-precio"></p>
+    <button class="boton-agregar">Agregar al carrito</button>
+    </article>
+</template>
+<aside id="seccion-carrito">
+    <div>
+    <h2>Carrito</h2>
+    <button id="cerrar-carrito">X</button>
+    </div>
+    <div id="lista-carrito">
+    <p>Tu carrito esta vacio</p>
+    </div>
+    <div>
+    <p>Total :</p> <span id="precio-total"> 0.00</span>
+    <button id="boton-vaciar-carrito">Vaciar Carrito</button>
+    <button id="procesar-pago">Finalizar Compra </button>
+    </div>
+</aside>
+</body>
+</html>

@@ -1,0 +1,110 @@
+[
+    {
+    "id": 101,
+    "name": "Teclado mecánico",
+    "category": "Tecnologia",
+    "price": 189900,
+    "stock": 8,
+    "description": "Teclado USB para uso diario",
+    "active": true
+    },
+    {
+    "id": 103,
+    "name": " mouse",
+    "category": "Tecnologia",
+    "price": 50000,
+    "stock": 20,
+    "description": "mouse inalambrico",
+    "active": true
+    },
+
+    {
+    "id": 201,
+    "name": "camisa blanca",
+    "category": "Ropa",
+    "price": 50000,
+    "stock": 10,
+    "description": "Camisa blanca de algodon",
+    "active": true
+    },
+
+    {
+    "id": 202,
+    "name": "Camisa Negra",
+    "category": "Ropa",
+    "price": 60000,
+    "stock": 0,
+    "description": "Camisa negra de algodon",
+    "active": false
+    },
+
+    {
+    "id": 203,
+    "name": "Pantalon negro",
+    "category": "Ropa",
+    "price": 80000,
+    "stock": 5,
+    "description": "Pantalon negro de algodon",
+    "active": true
+    },
+
+    {
+    "id": 301,
+    "name": "Mermelada de fresa",
+    "category": "Alimentos",
+    "price": 12000,
+    "stock": 10,
+    "description": "Mermelada de fresa organica",
+    "active": true
+    },
+
+    {
+    "id": 302,
+    "name": "Galletas de chocolate",
+    "category": "Alimentos",
+    "price": 8000,
+    "stock": 2,
+    "description": "Galletas de chocolate organicas",
+    "active": false
+    },
+
+    {
+    "id": 303,
+    "name": "Cereal de trigo",
+    "category": "Alimentos",
+    "price": 15000,
+    "stock": 5,
+    "description": "Cereal de trigo organico",
+    "active": true
+    },
+
+    {
+    "id": 401,
+    "name": "Jabon de manos",
+    "category": "Higiene",
+    "price": 8000,
+    "stock": 5,
+    "description": "Jabon de manos organico",
+    "active": true
+    },
+
+    {
+    "id": 402,
+    "name": "Cepillo de dientes",
+    "category": "Higiene",
+    "price": 5000,
+    "stock": 5,
+    "description": "Cepillo de dientes organico",
+    "active": false
+    },  
+
+    {
+    "id": 403,
+    "name": "Jabon liquido",
+    "category": "Higiene",
+    "price": 12000,
+    "stock": 0,
+    "description": "Jabon liquido organico",
+    "active": false
+    }
+]
