@@ -3,50 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Tecnostokc</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-    <header>
-    <h1>FAKESTORE</h1>
-    <input type="text" id="input-busqueda" placeholder="Buscar productos...">
-    <button id="boton-abrir-carrito">
-    🛒 Carrito (<span id="contador-carrito">0</span>)
-    </button>
+<header>
+    <h2>Tecnostokc</h2>
+    <div>Productos <b id="totalUnidades">0</b></div>
 </header>
-<section>
-    <select name="" id="filtro-categoria">
-    <option value="todas">Todas las categorias</option>  
-    </select>
+<div class="filtros">
+<input type="text" id="buscador" placeholder="buscar">
+<select id="filtroCategoria" class="filtro">
+<option value="todas">Todas las categorias</option>
+<option value="Tecnologia">Tecnologia</option>
+<option value="Ropa">Ropa</option>
+<option value="Alimentos">Alimentos</option>
+<option value="Higiene">Higiene</option>
 
-    <select id="filtro-orden">
-    <option value="defecto">Relevancia</option>
-    <option value="precio-menor">Precio: Menor a Mayor</option>
-    <option value="precio-mayor">Precio: Mayor a Menor</option>
-    <option value="nombre-az">Nombre:A-Z</option>
-    </select>
-</section>
-<template id="plantilla-producto">
-    <article class="tarjeta-producto">
-    <h3 class="titulo-producto"></h3>
-    <h4 class="producto-descripcion"></h4>
-    <span class="producto-categoria"></span>
-    <p class="producto-precio"></p>
-    <button class="boton-agregar">Agregar al carrito</button>
-    </article>
-</template>
-<aside id="seccion-carrito">
-    <div>
-    <h2>Carrito</h2>
-    <button id="cerrar-carrito">X</button>
-    </div>
-    <div id="lista-carrito">
-    <p>Tu carrito esta vacio</p>
-    </div>
-    <div>
-    <p>Total :</p> <span id="precio-total"> 0.00</span>
-    <button id="boton-vaciar-carrito">Vaciar Carrito</button>
-    <button id="procesar-pago">Finalizar Compra </button>
-    </div>
-</aside>
+</select>
+<select id="filtroOrden" class="filtro">
+    <option value="">Precio</option>
+    <option value="precio-menor">Menor</option>
+    <option value="precio-mayor">Mayor</option>
+    <option value="nombre-az">Alfabético (A-Z)</option>
+</select>
+</div>
+<body>
+    
 </body>
 </html>
