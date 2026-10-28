@@ -1,13 +1,16 @@
 export class ProductCard extends HTMLElement {
   set data(p) {
-    const ok = p.active && p.stock > 0;
+    if (!p) return;
+    const { id, name, category, description, price, stock, active } = p;
+    const ok = active && stock > 0 && id > 0;
+
     this.innerHTML = `
       <div class="card">
-        <h4>${p.name}</h4>
-        <small>${p.category}</small>
-        <p>${p.description}</p>
-        <b>$${p.price.toLocaleString("es-CO")}</b>
-        <p>Stock: ${p.stock}</p>
+        <h4>${name}</h4>
+        <small>${category}</small>
+        <p>${description}</p>
+        <b>$${price.toLocaleString("es-CO")}</b>
+        <p>Stock: ${stock}</p>
         <button class="btn-add" ${!ok ? "disabled" : ""}>
           ${ok ? "Agregar" : "Agotado"}
         </button>
@@ -18,7 +21,7 @@ export class ProductCard extends HTMLElement {
     if (btn && ok) {
       btn.onclick = () => {
         this.dispatchEvent(new CustomEvent("agregar-carrito", {
-          detail: { id: p.id },
+          detail: { id },
           bubbles: true,
           composed: true
         }));
