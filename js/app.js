@@ -3,7 +3,24 @@ import "./product-list.js";
 import "./carrito.js";
 
 let prods = [];
-let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+function getStoredCart() {
+  try {
+    const raw = localStorage.getItem("cart");
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(item => {
+      if (!item || typeof item !== "object") return false;
+      const { id, cantidad } = item;
+      return typeof id === "number" && id > 0 && typeof cantidad === "number" && cantidad >= 1;
+    });
+  } catch {
+    return [];
+  }
+}
+
+let cart = getStoredCart();
 
 const list = document.querySelector("#lista-productos");
 const cartEl = document.querySelector("#carrito-compras");
@@ -26,12 +43,16 @@ function updateCart() {
   let items = [];
 
   for (let c of cart) {
-    let p = prods.find(x => x.id === c.id);
-    if (p && p.active && p.stock > 0) {
-      if (c.cantidad > p.stock) c.cantidad = p.stock;
-      subtotal += p.price * c.cantidad;
-      totalUnits += c.cantidad;
-      items.push({ ...p, cantidad: c.cantidad });
+    const { id, cantidad } = c;
+    let p = prods.find(x => x.id === id);
+    if (p) {
+      const { price, stock, active } = p;
+      if (active && stock > 0) {
+        if (c.cantidad > stock) c.cantidad = stock;
+        subtotal += price * c.cantidad;
+        totalUnits += c.cantidad;
+        items.push({ ...p, cantidad: c.cantidad });
+      }
     }
   }
 
@@ -48,16 +69,18 @@ function updateCart() {
 
 function filter() {
   let res = prods;
-  let txt = search.value.toLowerCase();
+  const txt = search.value.toLowerCase().trim();
 
   if (txt) {
-    res = res.filter(p => p.name.toLowerCase().includes(txt) || p.description.toLowerCase().includes(txt));
+    res = res.filter(({ name, description }) => 
+      name.toLowerCase().includes(txt) || description.toLowerCase().includes(txt)
+    );
   }
   if (fCat.value !== "todas") {
-    res = res.filter(p => p.category === fCat.value);
+    res = res.filter(({ category }) => category === fCat.value);
   }
   if (fDisp.checked) {
-    res = res.filter(p => p.active && p.stock > 0);
+    res = res.filter(({ active, stock }) => active && stock > 0);
   }
 
   if (fOrd.value === "precio-menor") res.sort((a, b) => a.price - b.price);
@@ -80,35 +103,39 @@ bClear.onclick = () => {
   filter();
 };
 
-document.addEventListener("agregar-carrito", e => {
-  let p = prods.find(x => x.id === e.detail.id);
+document.addEventListener("agregar-carrito", ({ detail: { id } }) => {
+  if (typeof id !== "number" || id <= 0) return;
+
+  let p = prods.find(x => x.id === id);
   if (!p || !p.active || p.stock <= 0) {
     alert("Producto no disponible");
     return;
   }
 
-  let item = cart.find(x => x.id === p.id);
+  let item = cart.find(x => x.id === id);
   if (item) {
     if (item.cantidad >= p.stock) {
-      alert("No hay suficiente stock");
+      alert("No hay suficiente stock disponible");
       return;
     }
     item.cantidad++;
   } else {
-    cart.push({ id: p.id, cantidad: 1 });
+    cart.push({ id, cantidad: 1 });
   }
   updateCart();
 });
 
-document.addEventListener("cambiar-cantidad", e => {
-  let p = prods.find(x => x.id === e.detail.id);
-  let item = cart.find(x => x.id === e.detail.id);
+document.addEventListener("cambiar-cantidad", ({ detail: { id, delta } }) => {
+  if (typeof id !== "number" || id <= 0) return;
+
+  let p = prods.find(x => x.id === id);
+  let item = cart.find(x => x.id === id);
   if (!item || !p) return;
 
-  let nueva = item.cantidad + e.detail.delta;
+  let nueva = item.cantidad + delta;
   if (nueva < 1) return;
   if (nueva > p.stock) {
-    alert("Supera el stock");
+    alert("Supera el stock disponible");
     return;
   }
 
@@ -116,8 +143,8 @@ document.addEventListener("cambiar-cantidad", e => {
   updateCart();
 });
 
-document.addEventListener("eliminar-item", e => {
-  cart = cart.filter(x => x.id !== e.detail.id);
+document.addEventListener("eliminar-item", ({ detail: { id } }) => {
+  cart = cart.filter(x => x.id !== id);
   updateCart();
 });
 
@@ -128,9 +155,50 @@ document.addEventListener("vaciar-carrito", () => {
 
 document.addEventListener("confirmar-pedido", () => {
   if (cart.length === 0) {
-    alert("El carrito está vacío");
+    alert("El carrito está vacío. Agrega productos antes de comprar.");
     return;
   }
+
+  let valido = true;
+  for (let c of cart) {
+    let p = prods.find(x => x.id === c.id);
+    if (!p || !p.active || p.stock <= 0) {
+      valido = false;
+      break;
+    }
+  }
+
+  if (!valido) {
+    alert("Algunos productos del carrito ya no están disponibles.");
+    updateCart();
+    return;
+  }
+
+  const idPedido = "TECNO-" + Date.now().toString(36).toUpperCase();
+
+  let subtotal = 0;
+  let resumenLineas = "";
+  for (let c of cart) {
+    let p = prods.find(x => x.id === c.id);
+    const totalLinea = p.price * c.cantidad;
+    subtotal += totalLinea;
+    resumenLineas += `• ${p.name} x${c.cantidad} ($${totalLinea.toLocaleString("es-CO")})\n`;
+  }
+
+  let descuento = subtotal >= 300000 ? subtotal * 0.1 : 0;
+  let total = subtotal - descuento;
+
+  alert(
+    `✅ ¡PEDIDO CONFIRMADO!\n\n` +
+    `N° de Pedido: ${idPedido}\n\n` +
+    `Resumen:\n${resumenLineas}\n` +
+    `Subtotal: $${subtotal.toLocaleString("es-CO")}\n` +
+    `Descuento: $${descuento.toLocaleString("es-CO")}\n` +
+    `Total a Pagar: $${total.toLocaleString("es-CO")}\n\n` +
+    `(Simulación de compra local completada con éxito)`
+  );
+  cart = [];
+  updateCart();
 });
 
 async function init() {
@@ -139,16 +207,21 @@ async function init() {
     prods = await getProductos();
     msgEl.textContent = "";
 
-    prods.forEach(p => {
-      if (!fCat.innerHTML.includes(p.category)) {
-        fCat.innerHTML += `<option value="${p.category}">${p.category}</option>`;
+    if (!prods.length) {
+      msgEl.textContent = "No hay productos disponibles en el catálogo.";
+      return;
+    }
+
+    prods.forEach(({ category }) => {
+      if (!fCat.innerHTML.includes(category)) {
+        fCat.innerHTML += `<option value="${category}">${category}</option>`;
       }
     });
 
     updateCart();
     filter();
   } catch (err) {
-    msgEl.textContent = "Error al cargar catálogo";
+    msgEl.textContent = "Error al cargar catálogo. Intente de nuevo más tarde.";
   }
 }
 
